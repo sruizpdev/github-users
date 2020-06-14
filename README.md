@@ -1,1 +1,1 @@
-# Simple Vet Clinic App with React
+# Simple Vet Clinic App

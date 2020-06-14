@@ -1,2 +1,1 @@
-# gestion-inc-pacs
-proyecto final del ciclo
+# Simple Vet Clinic App with React

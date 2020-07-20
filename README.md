@@ -1,1 +1,0 @@
-# Simple Vet Clinic App

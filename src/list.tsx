@@ -56,6 +56,11 @@ const Enlace = styled.span`
     color: #2196f3;
   }
 `;
+const Error = styled.div`
+  color: red;
+  font-weight: bold;
+  margin-top: 20px;
+`;
 
 interface MemberEntity {
   id: string;
@@ -80,8 +85,10 @@ export const ListPage: React.FC = () => {
       fetch(`https://api.github.com/orgs/${company}/members`).then(
         (response) => {
           if (response.ok) {
+            setError(false);
             response.json().then((json) => setMembers(json));
           } else {
+            setError(true);
             console.log('Respuesta HTTP no OK');
           }
         }
@@ -130,33 +137,38 @@ export const ListPage: React.FC = () => {
           <Input value={company} onChange={(e) => setCompany(e.target.value)} />
           <ButtonSearch type="submit" value="Buscar" />
         </Form>
-
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Avatar</th>
-              <th>Id</th>
-              <th>Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            {members.map((member) => (
-              <tr key={member.id}>
-                <td>
-                  <Avatar alt="Remy Sharp" src={member.avatar_url} />
-                </td>
-                <td>
-                  <span>{member.id}</span>
-                </td>
-                <td>
-                  <Link to={generatePath('/detail/:id', { id: member.login })}>
-                    <Enlace>{member.login}</Enlace>
-                  </Link>
-                </td>
+        {error ? (
+          <Error>No hay resultados</Error>
+        ) : (
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Avatar</th>
+                <th>Id</th>
+                <th>Name</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {members.map((member) => (
+                <tr key={member.id}>
+                  <td>
+                    <Avatar alt="Remy Sharp" src={member.avatar_url} />
+                  </td>
+                  <td>
+                    <span>{member.id}</span>
+                  </td>
+                  <td>
+                    <Link
+                      to={generatePath('/detail/:id', { id: member.login })}
+                    >
+                      <Enlace>{member.login}</Enlace>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </Container>
     </>
   );

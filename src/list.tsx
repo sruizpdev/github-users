@@ -1,11 +1,25 @@
 import React from 'react';
 import { Link, generatePath } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import Avatar from '@material-ui/core/Avatar';
+import Divider from '@material-ui/core/Divider';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import styled from '@emotion/styled';
+import { Global, css } from '@emotion/core';
+
+const AppBar = styled.div`
+  background-color: #2196f3;
+  height: 50px;
+  text-align: center;
+  margin-bottom: 50px;
+`;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,7 +55,7 @@ export const ListPage: React.FC = () => {
           if (response.ok) {
             response.json().then((json) => setMembers(json));
           } else {
-            console.log('Respuesta de red OK pero respuesta HTTP no OK');
+            console.log('Respuesta HTTP no OK');
           }
         }
       );
@@ -51,52 +65,74 @@ export const ListPage: React.FC = () => {
   };
   return (
     <>
-      <AppBar position="relative">
-        <Toolbar>
-          <Typography variant="h6" color="inherit" noWrap>
-            Filtrar por organizacion
-          </Typography>
-        </Toolbar>
+      <Global
+        styles={css`
+          * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            text-decoration: none;
+            border: none;
+            outline: none;
+          }
+          html {
+            font-family: 'PT Sans', sans-serif;
+          }
+          h1 {
+            color: white;
+          }
+        `}
+      />
+
+      <AppBar>
+        <h1>Filtrar por organizacion</h1>
       </AppBar>
 
-      <form noValidate autoComplete="off" onSubmit={handleCompany}>
-        <TextField
-          id="standard-basic"
-          label="Organización"
-          value={company}
-          onChange={(e) => setCompany(e.target.value)}
-        />
-        <Button variant="contained" type="submit" color="primary">
-          Search by company
-        </Button>
-      </form>
-      <h2>Hello from List page</h2>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Avatar</th>
-            <th>Id</th>
-            <th>Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          {members.map((member) => (
-            <tr key={member.id}>
-              <td>
-                <img src={member.avatar_url} style={{ width: '5rem' }} />
-              </td>
-              <td>
-                <span>{member.id}</span>
-              </td>
-              <td>
-                <Link to={generatePath('/detail/:id', { id: member.login })}>
-                  {member.login}
-                </Link>{' '}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Grid container justify="center" spacing={3}>
+        <Grid item xs={5}>
+          <form noValidate autoComplete="off" onSubmit={handleCompany}>
+            <TextField
+              id="standard-basic"
+              label="Organización"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+            />
+            <Button
+              size="small"
+              variant="contained"
+              type="submit"
+              color="primary"
+            >
+              Search by company
+            </Button>
+          </form>
+
+          <Container maxWidth="sm">
+            {members.map((member) => (
+              <List>
+                <ListItem>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <Avatar alt="Remy Sharp" src={member.avatar_url} />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={member.id}
+                    secondary={
+                      <Link
+                        to={generatePath('/detail/:id', { id: member.login })}
+                      >
+                        {member.login}
+                      </Link>
+                    }
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+              </List>
+            ))}
+          </Container>
+        </Grid>
+      </Grid>
     </>
   );
 };
